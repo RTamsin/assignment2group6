@@ -56,7 +56,7 @@ The game is a 2D side-scrolling endless game built using `GameEngine.java`, insp
 - Core mechanics from Part 1.
 
 ### Part 3: Visuals and Stretch Objectives
-**Assigned to: Group Member 3**
+**Assigned to: Brendan**
 
 **Responsibilities:**
 - Source or create sprites for helicopter, building obstacles, town background (sky), normal coins (e.g., gold coin), and health coins (e.g., medkit or heart icon).
@@ -79,7 +79,7 @@ The game is a 2D side-scrolling endless game built using `GameEngine.java`, insp
 - Core mechanics from Part 1.
 
 ### Part 4: UI and Sound
-**Assigned to: Group Member 4**
+**Assigned to: Peter**
 
 **Responsibilities:**
 - Design main menu with an option to start the game.
