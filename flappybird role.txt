@@ -1,0 +1,123 @@
+﻿Group Member 1
+
+
+Responsibilities:
+
+
+
+
+
+
+lives system (starts with 3 lives, loses 1 on collision).
+
+
+
+
+
+
+Set initial difficulty (easy: moderate gaps, shorter buildings).
+
+
+
+
+
+
+
+
+
+
+
+
+Handle game states (start, playing, game over: lives = 0, restart).
+
+
+
+
+
+
+Implement scoring (10 points per normal coin collected).
+
+
+Add randomized coin spawning: normal coins (often, e.g., 70% spawn chance) and health coins (rarely, e.g., 5% spawn chance).
+
+
+
+
+
+
+Add logic for health coins (rare, +1 life each).
+
+
+
+
+
+
+Record top 3 scores (store in a file or array).
+
+
+Deliverables:
+
+
+
+
+
+
+
+
+
+
+Helicopter physics with flapping and gravity.
+
+
+
+
+
+
+Lives system (3 initial lives, health coins for extra lives).
+
+
+
+
+
+
+Dynamic difficulty adjustment based on score.
+
+
+
+
+
+
+Game state management (start, game over, restart).
+
+
+
+
+
+
+Scoring logic (normal coins only) and health coin logic.
+
+
+
+
+
+
+Top 3 score tracking.
+
+
+
+
+scoring, coin collection, health coins, and difficulty scaling.
+
+
+Dependencies:
+
+
+
+
+
+
+
+
+
+
+Obstacle and coin data from Part 2.
