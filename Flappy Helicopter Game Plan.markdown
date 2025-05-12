@@ -6,47 +6,49 @@ The game is a 2D side-scrolling endless game built using `GameEngine.java`, insp
 ## Development Plan: Division of Tasks
 
 ### Part 1: Core Gameplay and Helicopter Mechanics
-**Assigned to: Group Member 1**
+**Assigned to: Tamsin (Group Member 1)**
 
 **Responsibilities:**
-- Implement helicopter movement (flap on spacebar, gravity-based descent), collision detection, and lives system (starts with 3 lives, loses 1 on collision).
+- Implement helicopter movement (flap on spacebar, gravity-based descent) (already done by Jerome).
+- Implement collision detection (helicopter with obstacles, coins, ground) and lives system (starts with 3 lives, loses 1 on collision).
 - Set initial difficulty (easy: moderate gaps, shorter buildings).
-- Implement increasing difficulty (e.g., gaps narrow by 5% and building height increases by 10% every 20 points).
+- Add randomized coin spawning: normal coins (often, e.g., 70% spawn chance) and health coins (rarely, e.g., 5% spawn chance).
 - Handle game states (start, playing, game over: lives = 0, restart).
 - Implement scoring (10 points per normal coin collected).
 - Add logic for health coins (rare, +1 life each).
 - Record top 3 scores (store in a file or array).
 
 **Deliverables:**
-- Helicopter physics with flapping and gravity.
+- Helicopter physics with flapping and gravity (done by Jerome).
+- Collision detection for obstacles, coins, and ground.
 - Lives system (3 initial lives, health coins for extra lives).
-- Dynamic difficulty adjustment based on score.
+- Coin spawning logic (normal and health coins).
 - Game state management (start, game over, restart).
 - Scoring logic (normal coins only) and health coin logic.
 - Top 3 score tracking.
-- Test cases for collisions, scoring, coin collection, health coins, and difficulty scaling.
+- Test cases for collisions, scoring, coin collection, and health coins.
 
 **Dependencies:**
 - Obstacle and coin data from Part 2.
 - Visual assets from Part 3.
 
-### Part 2: Town Environment, Obstacles, and Coins
-**Assigned to: Group Member 2**
+### Part 2: Town Environment and Obstacles
+**Assigned to: Jerome (Group Member 2)**
 
 **Responsibilities:**
 - Design obstacle generation for town (building-shaped rectangles, starting with moderate gaps and shorter heights).
-- Implement randomized obstacle spawning with dynamic difficulty adjustments (narrower gaps, taller buildings as score increases).
+- Implement randomized obstacle spawning.
+- Implement increasing difficulty (e.g., gaps narrow by 5% and building height increases by 10% every 20 points based on score).
 - Create a scrolling ground layer for movement effect.
-- Add randomized coin spawning: normal coins (often, e.g., 70% spawn chance) and health coins (rarely, e.g., 5% spawn chance).
-- Integrate obstacles and coins with collision detection.
+- Provide obstacle data (positions, sizes) for collision detection in Part 1.
 - If time allows, prototype a forest map (tree obstacles) as a stretch goal.
 
 **Deliverables:**
 - Obstacle generation logic for town with dynamic difficulty.
 - Scrolling ground rendering.
-- Coin spawning logic (normal coins often, health coins rarely).
-- Documentation on obstacle and coin properties for collision.
-- Test cases for obstacle and coin spawning.
+- Dynamic difficulty adjustment (narrower gaps, taller buildings).
+- Documentation on obstacle properties for collision.
+- Test cases for obstacle spawning and difficulty scaling.
 - Optional: Basic forest map prototype.
 
 **Dependencies:**
@@ -58,7 +60,7 @@ The game is a 2D side-scrolling endless game built using `GameEngine.java`, insp
 
 **Responsibilities:**
 - Source or create sprites for helicopter, building obstacles, town background (sky), normal coins (e.g., gold coin), and health coins (e.g., medkit or heart icon).
-- Render town environment visuals with sprites or rectangles, adjusting building heights dynamically.
+- Render town environment visuals with sprites or rectangles, adjusting building heights dynamically based on difficulty.
 - Add basic animation (e.g., helicopter rotor spin via 2-3 sprite frames).
 - If time allows, prototype stretch objectives:
   - Firefighting: Collect water drops (extra points) to simulate extinguishing fires.
@@ -95,26 +97,3 @@ The game is a 2D side-scrolling endless game built using `GameEngine.java`, insp
 
 **Dependencies:**
 - Core mechanics from Part 1.
-
-## Timeline (2 Weeks)
-- **Week 1**:
-  - **Day 1-2**: Assign roles, set up project, source assets (helicopter sprite, flap sound).
-  - **Day 3-4**: Implement core mechanics with dynamic difficulty (Part 1), town obstacles and coins (Part 2).
-  - **Day 5-7**: Add town visuals and animation (Part 3).
-- **Week 2**:
-  - **Day 8-10**: Develop UI, integrate sounds (Part 4).
-  - **Day 11-12**: Integrate parts, test core game (town, endless mode, dynamic difficulty, coin/health coin collection).
-  - **Day 13-14**: Add stretch goals (forest map, firefighting/war objectives) if time allows; polish, prepare submission (code, 4-5 page document, 5-minute video).
-
-## Tools and Resources
-- **GameEngine.java**: For rendering, input, audio.
-- **Sprites**: OpenGameArt.org for helicopter, buildings, sky, normal coins, health coins; optional forest trees, water drops, enemy fire.
-- **Sounds**: Freesound.org for WAV files (flap, crash, coin collect, health coin collect, music).
-- **Version Control**: GitHub.
-- **IDE**: IntelliJ.
-
-## Next Steps
-- Assign members to Parts 1–4.
-- Set up GitHub repository.
-- Source one sprite (helicopter with rotor frames) and one sound (flap) by Day 2.
-- Schedule mid-week check-in (Day 7) to assess progress and decide on stretch goals.
