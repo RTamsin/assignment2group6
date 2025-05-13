@@ -1,0 +1,219 @@
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Random;
+
+
+public class Flappy extends GameEngine {
+    final int WINDOW_WIDTH = 400;
+    final int WINDOW_HEIGHT = 600;
+    final int G = 1;
+    final int COIN_HORIZONTAL_SPACING = 150;
+    final int COIN_SIZE = 20;
+
+
+    enum GameState { START, PLAYING, GAME_OVER }
+    GameState gameState = GameState.START;
+
+
+    double birdX, birdY, birdVelY;
+    int lives = 3;
+    int score = 0;
+
+
+    ArrayList<Rectangle> coins = new ArrayList<>();
+    ArrayList<Rectangle> healthCoins = new ArrayList<>();
+    ArrayList<Integer> topScores = new ArrayList<>();
+
+
+    int coinSpawnRate = 40;
+    int healthCoinSpawnRate = 3500;
+
+
+    Random rand = new Random();
+
+
+    public static void main(String[] args) {
+        createGame(new Flappy(), 60);
+    }
+
+
+    @Override
+    public void init() {
+        setWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        resetGame();
+    }
+
+
+    @Override
+    public void update(double dt) {
+        if (gameState != GameState.PLAYING) return;
+
+
+        birdVelY += G;
+        birdY += birdVelY * dt * 10;
+
+
+        for (Rectangle coin : coins) {
+            coin.x -= 2;
+        }
+
+
+        coins.removeIf(coin -> coin.x + coin.width < 0);
+
+
+        if (coins.isEmpty() || coins.get(coins.size() - 1).x < WINDOW_WIDTH - COIN_HORIZONTAL_SPACING) {
+            if (rand.nextInt(coinSpawnRate) == 0) {
+                spawnCoin();
+            }
+        }
+
+
+        if (rand.nextInt(healthCoinSpawnRate) == 0) {
+            healthCoins.add(randomItem(true));
+        }
+
+
+        for (Rectangle hcoin : healthCoins) {
+            hcoin.x -= 2;
+        }
+
+
+        healthCoins.removeIf(hcoin -> hcoin.x + hcoin.width < 0);
+
+
+        detectCollisions();
+    }
+
+
+    @Override
+    public void paintComponent() {
+        changeBackgroundColor(Color.cyan);
+        clearBackground(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+
+        // Draw bird
+        changeColor(Color.YELLOW);
+        drawSolidCircle(birdX, birdY, 20);
+
+
+        // Draw coins (gold)
+        changeColor(Color.ORANGE);
+        for (Rectangle coin : coins) {
+            drawSolidCircle(coin.x + COIN_SIZE / 2.0, coin.y + COIN_SIZE / 2.0, COIN_SIZE / 2.0);
+        }
+
+
+        // Draw health coins (green)
+        changeColor(Color.GREEN);
+        for (Rectangle hcoin : healthCoins) {
+            drawSolidCircle(hcoin.x + COIN_SIZE / 2.0, hcoin.y + COIN_SIZE / 2.0, COIN_SIZE / 2.0);
+        }
+
+
+        // Display score and lives
+        changeColor(Color.BLACK);
+        drawText(20, 30, "Lives: " + lives, "Arial", 20);
+        drawText(20, 60, "Score: " + score, "Arial", 20);
+
+
+        // Display top scores on the right
+        drawText(WINDOW_WIDTH - 150, 30, "Top Scores:", "Arial", 20);
+        for (int i = 0; i < topScores.size(); i++) {
+            drawText(WINDOW_WIDTH - 150, 60 + i * 30, (i + 1) + ": " + topScores.get(i), "Arial", 18);
+        }
+
+
+        // Display game state messages
+        if (gameState == GameState.START) {
+            drawText(width() / 2 - 100, height() / 2, "PRESS UP TO START", "Arial", 24);
+        } else if (gameState == GameState.GAME_OVER) {
+            drawText(width() / 2 - 100, height() / 2 - 20, "GAME OVER", "Arial", 24);
+            drawText(width() / 2 - 130, height() / 2 + 20, "PRESS UP TO RESTART", "Arial", 24);
+        }
+    }
+
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            if (gameState == GameState.START || gameState == GameState.GAME_OVER) {
+                resetGame();
+                gameState = GameState.PLAYING;
+                birdVelY = -15;
+            } else if (gameState == GameState.PLAYING) {
+                birdVelY = -15;
+            }
+        }
+    }
+
+
+    private void detectCollisions() {
+        Rectangle birdRect = new Rectangle((int) birdX - 20, (int) birdY - 20, 40, 40);
+
+
+        coins.removeIf(coin -> {
+            if (coin.intersects(birdRect)) {
+                score += 10;
+                return true;
+            }
+            return false;
+        });
+
+
+        healthCoins.removeIf(hcoin -> {
+            if (hcoin.intersects(birdRect)) {
+                lives++;
+                return true;
+            }
+            return false;
+        });
+
+
+        // If bird goes off screen, lose a life
+        if (birdY < 0 || birdY > WINDOW_HEIGHT) {
+            lives--;
+            birdY = 300;
+            birdVelY = 0;
+            if (lives <= 0) {
+                updateTopScores(score);
+                gameState = GameState.GAME_OVER;
+            }
+        }
+    }
+
+
+    private void resetGame() {
+        lives = 3;
+        score = 0;
+        birdX = 100;
+        birdY = 300;
+        birdVelY = 0;
+        coins.clear();
+        healthCoins.clear();
+    }
+
+
+    private void spawnCoin() {
+        int x = WINDOW_WIDTH;
+        int y = rand.nextInt(WINDOW_HEIGHT - COIN_SIZE - 20) + 20;
+        coins.add(new Rectangle(x, y, COIN_SIZE, COIN_SIZE));
+    }
+
+
+    private Rectangle randomItem(boolean isHealth) {
+        int border = 40;
+        int x = WINDOW_WIDTH + border;
+        int y = rand.nextInt(WINDOW_HEIGHT - border * 2 - COIN_SIZE) + border;
+        return new Rectangle(x, y, COIN_SIZE, COIN_SIZE);
+    }
+
+
+    private void updateTopScores(int newScore) {
+        topScores.add(newScore);
+        topScores.sort((a, b) -> b - a);
+        if (topScores.size() > 3) {
+            topScores.remove(3);
+        }
+    }
+}
