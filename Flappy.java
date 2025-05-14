@@ -10,6 +10,7 @@ public class Flappy extends GameEngine {
     final int G = 1;
     final int COIN_HORIZONTAL_SPACING = 150;
     final int COIN_SIZE = 20;
+    final int SKIP_DISTANCE = 100;
 
 
     enum GameState { START, PLAYING, GAME_OVER }
@@ -25,6 +26,8 @@ public class Flappy extends GameEngine {
     ArrayList<Rectangle> healthCoins = new ArrayList<>();
     ArrayList<Integer> topScores = new ArrayList<>();
 
+    ArrayList<Obstacle> pipes;
+    boolean pipePassed;
 
     int coinSpawnRate = 40;
     int healthCoinSpawnRate = 3500;
@@ -42,8 +45,23 @@ public class Flappy extends GameEngine {
     public void init() {
         setWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         resetGame();
-    }
 
+        pipes = new ArrayList<>();
+        placeTopPipe();
+        placeBottomPipe();
+        pipePassed=false;
+    }
+    public void placeTopPipe(){
+        int randomPipeHeight = rand(150)+80;
+        pipes.add(new Obstacle(WINDOW_WIDTH, 0, 80, randomPipeHeight));
+    }
+    // Bottom Pipe
+    public void placeBottomPipe(){
+        int randomPipeHeight = rand(150)+80;
+        int randX = rand(150)+100;
+        int space = 200;
+        pipes.add(new Obstacle(WINDOW_WIDTH+randX,randomPipeHeight+space, 80, WINDOW_HEIGHT-randomPipeHeight-space));
+    }
 
     @Override
     public void update(double dt) {
@@ -53,6 +71,17 @@ public class Flappy extends GameEngine {
         birdVelY += G;
         birdY += birdVelY * dt * 10;
 
+        for (int i = 0; i < pipes.size(); i++) {
+            pipes.get(i).x += -5*dt*30;
+        }
+
+
+        if(pipes.get(1).x + pipes.get(1).width < 0){
+            pipes.remove(pipes.get(0));
+            pipes.remove(pipes.get(0));
+            placeTopPipe();
+            placeBottomPipe();
+        }
 
         for (Rectangle coin : coins) {
             coin.x -= 2;
@@ -96,6 +125,10 @@ public class Flappy extends GameEngine {
         changeColor(Color.YELLOW);
         drawSolidCircle(birdX, birdY, 20);
 
+        changeColor(Color.black);
+        for (Obstacle value : pipes) {
+            drawSolidRectangle(value.x, value.y, value.width, value.height);
+        }
 
         // Draw coins (gold)
         changeColor(Color.ORANGE);
@@ -150,7 +183,7 @@ public class Flappy extends GameEngine {
 
     private void detectCollisions() {
         Rectangle birdRect = new Rectangle((int) birdX - 20, (int) birdY - 20, 40, 40);
-
+        boolean collisionDetected = false;
 
         coins.removeIf(coin -> {
             if (coin.intersects(birdRect)) {
@@ -171,6 +204,27 @@ public class Flappy extends GameEngine {
 
 
         // If bird goes off screen, lose a life
+        for (Obstacle pipe : pipes) {
+            Rectangle pipeRect = new Rectangle(
+                    (int) pipe.x,
+                    (int) pipe.y,
+                    (int) pipe.width,
+                    (int) pipe.height
+            );
+            if (pipeRect.intersects(birdRect)) {
+                lives--;
+                birdY = 300;
+                birdVelY = 0;
+                if (lives <= 0) {
+                    updateTopScores(score);
+                    gameState = GameState.GAME_OVER;
+                }
+                birdX += SKIP_DISTANCE;
+                return;
+            }
+        }
+
+        // Boundary collision (top/bottom)
         if (birdY < 0 || birdY > WINDOW_HEIGHT) {
             lives--;
             birdY = 300;
@@ -181,6 +235,7 @@ public class Flappy extends GameEngine {
             }
         }
     }
+
 
 
     private void resetGame() {
