@@ -314,6 +314,8 @@ public class Flappy extends GameEngine {
     private void drawBackground(){
         drawImage(background,0,0,WINDOW_WIDTH,WINDOW_HEIGHT);
     }
+
+    // Create new methods for UISound - Peter
     public GameState getState() { return gameState; }
     public int getScore() { return score; }
     public int getLives() { return lives; }
