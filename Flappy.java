@@ -39,7 +39,7 @@ public class Flappy extends GameEngine {
 
     Random rand = new Random();
 
-    Image background, helicopter;
+    Image background, helicopter, heli;
 
     // Add UISound Instance - Peter
     private final UISound uiSound = new UISound(this, this);;
@@ -54,8 +54,9 @@ public class Flappy extends GameEngine {
     public void init() {
         setWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        background = loadImage("src/img/Background.png");
+        background = loadImage("src/img/background.png");
         helicopter = loadImage("src/img/heli.png");
+        heli = loadImage("src/img/Fly2.png");
 
         resetGame();
 
@@ -66,6 +67,7 @@ public class Flappy extends GameEngine {
 
         timer = 0;
         elapsedTime = 10;
+        initHelicopter();
     }
     public void placeTopPipe(){
         int randomPipeHeight = rand(150)+80;
@@ -147,7 +149,8 @@ public class Flappy extends GameEngine {
         drawBackground();
 
 
-        drawImage(helicopter, birdX,birdY,100,60);
+        //drawImage(helicopter, birdX,birdY,100,60);
+        drawHeli();
 
         changeColor(Color.black);
         for (Obstacle value : pipes) {
@@ -212,20 +215,27 @@ public class Flappy extends GameEngine {
         boolean collisionDetected = false;
 
         coins.removeIf(coin -> {
-            if (coin.intersects(birdRect)) {
+            if(     birdX+100 >= coin.x
+                    && coin.x+coin.width >= birdX
+                    && birdY < coin.y+coin.height
+                    && birdY+60 >= coin.y
+            ){
                 score += 10;
                 // Coin collect sound - Peter
                 playAudio(uiSound.getCoinSound());
                 return true;
             }
+
             return false;
         });
 
 
         healthCoins.removeIf(hcoin -> {
-            if (hcoin.intersects(birdRect)) {
+            if (birdX+100 >= hcoin.x
+                    && hcoin.x+hcoin.width >= birdX
+                    && birdY < hcoin.y+hcoin.height
+                    && birdY+60 >= hcoin.y) {
                 lives++;
-                // Health coin collect sound - Peter
                 playAudio(uiSound.getHealthSound());
                 return true;
             }
@@ -241,17 +251,19 @@ public class Flappy extends GameEngine {
                     (int) pipe.width,
                     (int) pipe.height
             );
-            if (pipeRect.intersects(birdRect)) {
+            if (birdX+100 >= pipe.x
+                    && pipe.x+pipe.width >= birdX
+                    && birdY < pipe.y+pipe.height
+                    && birdY+60 >= pipe.y) {
                 lives--;
                 birdY = 300;
-                birdVelY = 0;
-                // Crash sound on collision - Peter
+                birdVelY *=-1;
                 playAudio(uiSound.getCrashSound());
                 if (lives <= 0) {
                     updateTopScores(score);
                     gameState = GameState.GAME_OVER;
-
-
+                    timer=0;
+                    space=200;
                 }
                 return;
             }
@@ -313,6 +325,37 @@ public class Flappy extends GameEngine {
 
     private void drawBackground(){
         drawImage(background,0,0,WINDOW_WIDTH,WINDOW_HEIGHT);
+    }
+    Image[] heliImages = new Image[10];
+    public void initHelicopter() {
+        int n = 0;
+        for(int y = 0; y < 1260; y +=420) {
+            for(int x = 0; x < 772; x += 772) {
+                heliImages[n] = subImage(heli, x, y, 772, 420);
+                n++;
+            }
+        }
+    }
+    public void updateHeli(double dt) {
+        // If the explosion is active
+        if(gameState==GameState.PLAYING) {
+            // Increment timer
+            timer += dt*100;
+        }
+    }
+    public int getAnimationFrame(double timer, double duration, int numFrames) {
+        // Get frame
+        int i = (int)floor(((timer % duration) / duration) * numFrames);
+        // Check range
+        if(i >= numFrames) {
+            i = numFrames-1;
+        }
+        // Return
+        return i;
+    }
+    public void drawHeli() {
+        int i = getAnimationFrame(timer, 0.3, 3);
+        drawImage(heliImages[i], birdX, birdY, 150, 100);
     }
 
     // Create new methods for UISound - Peter
