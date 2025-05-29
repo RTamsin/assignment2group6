@@ -241,10 +241,10 @@ public class Flappy extends GameEngine {
                         (int) pipe.width,
                         (int) pipe.height
                 );
-                if (birdX + 150 >= pipe.x
+                if (birdX + 100 >= pipe.x
                         && pipe.x + pipe.width >= birdX
                         && birdY < pipe.y + pipe.height
-                        && birdY + 100 >= pipe.y) {
+                        && birdY + 60 >= pipe.y) {
                     lives--;
                     birdY = 300;
                     birdVelY *= -1;
