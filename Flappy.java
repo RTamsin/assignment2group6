@@ -46,7 +46,7 @@ public class Flappy extends GameEngine {
 
     Random rand = new Random();
 
-    Image background, helicopter, heli;
+    Image background, helicopter, heli, skyScraper ;
 
     // Add UISound Instance - Peter
     private final UISound uiSound = new UISound(this, this);
@@ -62,6 +62,7 @@ public class Flappy extends GameEngine {
         background = loadImage("src/img/background.png");
         helicopter = loadImage("src/img/heli.png");
         heli = loadImage("src/img/Fly2.png");
+        skyScraper = loadImage("Skyscraper.png");
 
         resetGame();
 
@@ -166,10 +167,11 @@ public class Flappy extends GameEngine {
         if (heliVisible) {
             drawHeli();
         }
-
+        
+        // Draw obstacles
         changeColor(Color.black);
         for (Obstacle value : pipes) {
-            drawSolidRectangle(value.x, value.y, value.width, value.height);
+            drawImage(skyScraper, value.x, value.y, value.width, value.height);
         }
 
         // Draw coins (gold)
@@ -206,10 +208,10 @@ public class Flappy extends GameEngine {
         boolean collisionDetected = false;
 
         coins.removeIf(coin -> {
-            if (birdX + 100 >= coin.x
+            if (birdX + 150 >= coin.x
                     && coin.x + coin.width >= birdX
                     && birdY < coin.y + coin.height
-                    && birdY + 60 >= coin.y) {
+                    && birdY + 100 >= coin.y) {
                 score += 10;
                 // Coin collect sound - Peter
                 playAudio(uiSound.getCoinSound());
@@ -219,10 +221,10 @@ public class Flappy extends GameEngine {
         });
 
         healthCoins.removeIf(hcoin -> {
-            if (birdX + 100 >= hcoin.x
+            if (birdX + 150 >= hcoin.x
                     && hcoin.x + hcoin.width >= birdX
                     && birdY < hcoin.y + hcoin.height
-                    && birdY + 60 >= hcoin.y) {
+                    && birdY + 100 >= hcoin.y) {
                 lives++;
                 playAudio(uiSound.getHealthSound());
                 return true;
@@ -239,10 +241,10 @@ public class Flappy extends GameEngine {
                         (int) pipe.width,
                         (int) pipe.height
                 );
-                if (birdX + 100 >= pipe.x
+                if (birdX + 150 >= pipe.x
                         && pipe.x + pipe.width >= birdX
                         && birdY < pipe.y + pipe.height
-                        && birdY + 60 >= pipe.y) {
+                        && birdY + 100 >= pipe.y) {
                     lives--;
                     birdY = 300;
                     birdVelY *= -1;
